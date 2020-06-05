@@ -35,15 +35,16 @@ def begin_chat(_, query):
                             reply_markup=BUTTONS)
     join_chat_button = InlineKeyboardMarkup([[InlineKeyboardButton(JOIN_CHAT_BUTTON, f"join_{query.from_user.id}")]])
     user = get_user(query.from_user.id)
-    rowid, uid, uname, date, last_call, imei = user
+    _, uid, uname, date = user
     admin = uid in ADMINS
     text = USER_INFO.format(uid=uid, uname='@' + uname if uname != 'null' else uname, date=date,
                             status='User' if not admin else 'Admin',
                             last_call=datetime.utcfromtimestamp(int(last_call)), imei=imei)
     CACHE[query.from_user.id].append([])
     for admin in ADMINS:
-        message = send_message(_, admin, SUPPORT_NOTIFICATION.format(uinfo=text), reply_markup=join_chat_button)
-        CACHE[query.from_user.id][-1].append((message.chat.id, message.message_id))
+        if STATUSES[admin][0] == "free":
+            message = send_message(_, admin, SUPPORT_NOTIFICATION.format(uinfo=text), reply_markup=join_chat_button)
+            CACHE[query.from_user.id][-1].append((message.chat.id, message.message_id))
     CACHE[query.from_user.id][-1].append((msg.chat.id, msg.message_id))
 
 

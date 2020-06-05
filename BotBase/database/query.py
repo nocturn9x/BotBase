@@ -4,6 +4,25 @@ from ..config import DB_GET_USERS, DB_GET_USER, DB_RELPATH, DB_SET_USER, DB_GET_
 import logging
 import time
 from types import FunctionType
+import os
+
+def create_database(path: str, query: str):
+    if os.path.exists(path):
+        logging.warning(f"Database file exists at {path}, running query")
+    else:
+        logging.warning(f"No database found, creating it at {path}")
+    try:
+        database = sqlite3.connect(path)
+    except sqlite3.Error as connection_error:
+        logging.error(f"An error has occurred while connecting to database: {connection_error}")
+    else:
+        try:
+            with database:
+                cursor = database.cursor()
+                cursor.executescript(query)
+                cursor.close()
+        except sqlite3.Error as query_error:
+            logging.info(f"An error has occurred while executing query: {query_error}")
 
 
 def get_user(tg_id: int):

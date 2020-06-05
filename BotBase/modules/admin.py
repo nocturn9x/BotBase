@@ -25,7 +25,7 @@ def get_user_info(client, message):
             user = get_user(message.command[1])
             if user:
                 logging.warning(f"Admin with id {message.from_user.id} sent /getuser {message.command[1]}")
-                rowid, uid, uname, date, admin = user
+                _, uid, uname, date, banned = user
                 text = USER_INFO.format(uid=uid, uname='@' + uname if uname != 'null' else uname, date=date, status='User' if not admin else 'Admin')
                 send_message(client, message.chat.id, text)
             else:
