@@ -24,22 +24,22 @@ is locked` error when accessing the database.
 All queries are performed within a `with` block and therefore rollbacked
 automatically if an error occurs or committed if the transaction was successful.
 
-    - `get_user()` -> Given a Telegram ID as input, returns a tuple containing
-    the unique id of the user in the database, its telegram id, username,
-    the date and time the user was inserted in the database as a string
-    (formatted as d/m/Y H:M:S) and an integer (0 for `False` and 1 for `True`)
-    that represents the user's status (whether it is banned or not)
+- `get_user()` -> Given a Telegram ID as input, returns a tuple containing
+the unique id of the user in the database, its telegram id, username,
+the date and time the user was inserted in the database as a string
+(formatted as d/m/Y H:M:S) and an integer (0 for `False` and 1 for `True`)
+that represents the user's status (whether it is banned or not)
 
-    - `get_users()` -> This acts similarly to the above `get_user`, but takes
-    no parameters and returns a list of all the users in the database. The
-    list contains tuples of the same structure of the ones returned by `get_user`
+- `get_users()` -> This acts similarly to the above `get_user`, but takes
+no parameters and returns a list of all the users in the database. The
+list contains tuples of the same structure of the ones returned by `get_user`
 
-    - `set_user()` -> Saves an ID/username pair (in this order)
-    to the database. The username parameter can be `None`
+- `set_user()` -> Saves an ID/username pair (in this order)
+to the database. The username parameter can be `None`
 
-    - `ban_user()` -> Bans the user with the given user ID (Coming soon)
+- `ban_user()` -> Bans the user with the given user ID (Coming soon)
 
-    - `unban_user()` -> Unbans a user with the given ID (Coming soon)
+- `unban_user()` -> Unbans a user with the given ID (Coming soon)
 
 # I need MySQL/other DBMS!
 

@@ -21,11 +21,11 @@ the corresponding pyrogram method returns.
 
 List of the available functions in `BotBase.methods.safe_send`
 
-    - `send_message`
-    - `send_photo`
-    - `send_audio`
-    - `send_animation`
-    - `send_sticker`
+- `send_message`
+- `send_photo`
+- `send_audio`
+- `send_animation`
+- `send_sticker`
 
 These are the exact names that pyrogram uses, to see their docs refer to
 [pyrogram docs](https://docs.pyrogram.org/api/methods/)
@@ -34,14 +34,14 @@ These are the exact names that pyrogram uses, to see their docs refer to
 
 List of the available functions in `BotBase.methods.safe_edit`
 
-    - `edit_message_text`
-    - `edit_message_media`
-    - `edit_message_caption`
+- `edit_message_text`
+- `edit_message_media`
+- `edit_message_caption`
 
 ## Methods - Various
 
 List of the available functions in `BotBase.methods.various`
 
-    - `answer` (for `CallbackQuery` objects)
-    - `delete_messages`
+- `answer` (for `CallbackQuery` objects)
+- `delete_messages`
 
