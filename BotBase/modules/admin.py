@@ -26,7 +26,11 @@ def get_user_info(client, message):
             if user:
                 logging.warning(f"Admin with id {message.from_user.id} sent /getuser {message.command[1]}")
                 _, uid, uname, date, banned = user
-                text = USER_INFO.format(uid=uid, uname='@' + uname if uname != 'null' else uname, date=date, status='User' if not admin else 'Admin')
+                admin = uid in ADMINS
+                text = USER_INFO.format(uid=uid, uname='@' + uname if uname != 'null' else uname, date=date,
+                                status='✅' if banned else '❌',
+                                admin='❌' if not admin else '✅'),
+                                )
                 send_message(client, message.chat.id, text)
             else:
                 send_message(client, message.chat.id, f"{ERROR}: {ID_MISSING.format(uid=message.command[1])}")
@@ -43,9 +47,11 @@ def get_random_user(client, message):
         send_message(client, message.chat.id, f"{INVALID_SYNTAX}: {NO_PARAMETERS.format(command='/getranduser')}")
     else:
         user = random.choice(get_users())
-        rowid, uid, uname, date, admin = get_user(*user)
+        rowid, uid, uname, date, banned = get_user(*user)
+        admin = uid in ADMINS
         text = USER_INFO.format(uid=uid, uname='@' + uname if uname != 'null' else uname, date=date,
-                                status='User' if not admin else 'Admin',
+                                status='✅' if banned else '❌',
+                                admin='❌' if not admin else '✅'),
                                 )
         send_message(client, message.chat.id, text)
 
@@ -59,9 +65,16 @@ def global_message(client, message):
         count = 0
         for uid in get_users():
             count += 1
-            if not send_message(client, *uid, msg):    # Returns False if an error gets raised
+            if isinstance(send_message(client, *uid, msg), Exception):
                 missed += 1
         send_message(client, message.chat.id, GLOBAL_MESSAGE_STATS.format(count=count, success=(count - missed), msg=msg))
     else:
         send_message(client, message.chat.id, f"{INVALID_SYNTAX}: Use <code>/global message</code>"
                                               "\n🍮 Note that the <code>/global</code> command supports markdown and html styling")
+
+@Client.on_message(Filters.command("whisper") & ADMINS_FILTER & Filters.private & ~BANNED_USERS)
+def whisper(client, message):
+    if len(message.command) > 1:
+        msg = " ".join(message.command[1:])
+        logging.warning(f"Admin with id {message.from_user.id} sent /whisper to {message.command}
+

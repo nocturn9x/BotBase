@@ -30,9 +30,8 @@ the date and time the user was inserted in the database as a string
 (formatted as d/m/Y H:M:S) and an integer (0 for `False` and 1 for `True`)
 that represents the user's status (whether it is banned or not)
 
-- `get_users()` -> This acts similarly to the above `get_user`, but takes
-no parameters and returns a list of all the users in the database. The
-list contains tuples of the same structure of the ones returned by `get_user`
+- `get_users()` -> This method takes no parameter and returns a list
+of tuples. Each tuple contains a user ID as stored in the database
 
 - `set_user()` -> Saves an ID/username pair (in this order)
 to the database. The username parameter can be `None`
@@ -47,3 +46,13 @@ The API has been designed in a way that makes it easy to swap between different
 database managers, so if you feel in the right mood make a PR to support a new
 database and it'll be reviewed ASAP.
 
+
+# Adding more methods
+
+If you want to add custom methods to the API, we advise to follow the bot's convention:
+
+- Set the SQL query as a global variable whose name starts with `DB_` in `config.py`
+- Import it in the `BotBase.database.query` module
+- Create a new function that takes the required parameters whose name reflects the query name (without `DB_`)
+- Perform the query in a `with` context manager, close the cursor when you're done
+- Return `True` or the query result if the query was successful, or an `Exception` subclass if an error occurs

@@ -37,3 +37,7 @@ def start_handler(client, message):
 def bot_info(_, query):
     buttons = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", "back_start")]])
     edit_message_text(query, CREDITS, reply_markup=buttons)
+
+
+@Client.on_callback_query(Filters.callback_data("back_start"))
+def 
