@@ -1,6 +1,6 @@
 # BotBase
 
-BotBase is a collection of plugins that use [Pyrogram's](https://github.com/pyrogram/pyrogram) API to Telegram make bot development extremely easy.
+BotBase is a collection of plugins that use [Pyrogram's](https://github.com/pyrogram/pyrogram) API to make Telegram bot development extremely easy.
 
 ### Disclaimer
 
