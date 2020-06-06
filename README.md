@@ -1,10 +1,10 @@
 # BotBase
 
-BotBase is a collection of plugins that use [Pyrogram's](https://github.com/pyrogram/pyrogram) API to make bot development extremely easy.
+BotBase is a collection of plugins that use [Pyrogram's](https://github.com/pyrogram/pyrogram) API to Telegram make bot development extremely easy.
 
 ### Disclaimer
 
-BotBase requires a solid knowledge of pyrogram and of the Telegram MTProto API itself, you can check pyrogram' docs [here](https://docs.pyrogram.org)
+BotBase requires a solid knowledge of pyrogram and of the Telegram MTProto API itself, you can check pyrogram's docs [here](https://docs.pyrogram.org)
 
 Also, you need to know how to host a bot yourself. I mean, I coded all of this for you already, make some effort!
 
@@ -56,20 +56,20 @@ This is the administrative module for the bot, and it also has its own section i
 
 To configure this plugin, go to the appropriate section in `config.py` and change the default values in the `ADMINS` dictionary. Do **NOT** change the value of `ADMINS`, just update the dictionary as follows:
 
-- Use the admin's ID as a key
-- As a value you can set the name that will be displayed to users in the admin's queue
+- Use the admin's Telegram ID as a key
+- As a value choose the name that the users will see when that admin joins a chat
 
 
 The available commands are:
 
 - `/getuser ID`: Fetches user information by its Telegram ID
 - `/getranduser`: Fetches a random user from the database
-- `/ban ID`: Bans a user from using the bot, permanently (Coming soon)
-- `/unban ID`: Unbans a user from using the bot   (Coming soon)
+- `/ban ID`: Bans a user from using the bot, permanently
+- `/unban ID`: Unbans a user from using the bot
 - `/count`: Shows the current number of registered users
-- `/global msg`: Broadcast whatever comes after `/global` to all users, supports HTML and markdown formatting
-- `/whisper ID msg`: Send `msg` to a specific user given its ID. HTML and markdown formatting supported (Coming soon)
-- `/update ID`: Updates the user's info in the database, if they've changed (Coming soon)
+- `/global msg`: Broadcast `msg` to all users, supports HTML and markdown formatting
+- `/whisper ID msg`: Send `msg` to a specific user given its ID. HTML and markdown formatting supported
+- `/update ID`: Updates the user's info in the database, if they've changed
 
 ### Plugins - Antiflood
 
@@ -92,7 +92,8 @@ If you don't know what a smart plugin is, check [this link](https://docs.pyrogra
 
 There are some things to keep in mind, though:
 
-- If you want to protect your plugin from flood, import the `BotBase.modules.antiflood.BANNED_USERS` filter (basically a `Filters.user()` object) and use it like this: `~BANNED_USERS`. This will restrict banned users from reaching your handler at all
+- If you want to protect your plugin from flood, import the `BotBase.modules.antiflood.BANNED_USERS` filter (basically a `Filters.user()` object) and use it like this: `~BANNED_USERS`. This will restrict banned users from reaching your handler at all.
+Please note that users banned with the `/ban` command will be put in that filter, too.
 - To avoid repetition with try/except blocks, BotBase also implements some wrappers around `pyrogram.Client` and `pyrogram.CallbackQuery` (and many more soon) that perform automatic exception handling and log to the console automatically, check the `METHODS.md` file in this repo to know more
-- Nothing restricts you from changing how the default plugins work, but this is not advised. The default plugins have been design to cooperate together and breaking this might lead to obscure tracebacks and errors that are hard to debug
+- Nothing restricts you from changing how the default plugins work, but this is not advised. The default plugins have been designed to cooperate together and breaking this might lead to obscure tracebacks and errors that are hard to debug
 - BotBase also has many default methods to handle database interaction, check the `DATABASE.md` file in this repo to know more

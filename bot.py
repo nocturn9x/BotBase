@@ -6,14 +6,15 @@ import importlib
 
 if __name__ == "__main__":
     MODULE_NAME = "BotBase"  # Change this to match the FOLDER name that contains the config.py file
-    conf = importlib.import_module(MODULE_NAME)
+    conf = importlib.import_module(f"{MODULE_NAME}.config")
+    dbmodule = importlib.import_module(f"{MODULE_NAME}.database.query")
     logging.basicConfig(format=conf.LOGGING_FORMAT, datefmt=conf.DATE_FORMAT, level=conf.LOGGING_LEVEL)
     bot = Client(api_id=conf.API_ID, api_hash=conf.API_HASH, bot_token=conf.BOT_TOKEN, plugins=conf.PLUGINS_ROOT,
                  session_name=conf.SESSION_NAME, workers=conf.WORKERS_NUM)
     Session.notice_displayed = True
     try:
         logging.warning("Running create_database()")
-        conf.create_database(conf.DB_RELPATH, conf.DB_CREATE)
+        dbmodule.create_database(conf.DB_PATH, conf.DB_CREATE)
         logging.warning("Database interaction complete")
         logging.warning("Starting bot")
         bot.start()

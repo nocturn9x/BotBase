@@ -20,8 +20,8 @@ def send_message(client: Client, sleep: bool = True, *args, **kwargs):
     except FloodWait as fw:
         logging.warning(f"FloodWait! A wait of {fw.x} seconds is required")
         if sleep:
-           time.sleep(fw.x)
-       return fw
+            time.sleep(fw.x)
+        return fw
     except RPCError as generic_error:
         logging.error(f"An exception occurred: {generic_error}")
         return generic_error
@@ -43,8 +43,8 @@ def send_photo(client: Client, sleep: bool = True, *args, **kwargs):
     except FloodWait as fw:
         logging.warning(f"FloodWait! A wait of {fw.x} seconds is required")
         if sleep:
-           time.sleep(fw.x)
-       return fw
+            time.sleep(fw.x)
+        return fw
     except RPCError as generic_error:
         logging.error(f"An exception occurred: {generic_error}")
         return generic_error
@@ -66,8 +66,8 @@ def send_audio(client: Client, sleep: bool = True, *args, **kwargs):
     except FloodWait as fw:
         logging.warning(f"FloodWait! A wait of {fw.x} seconds is required")
         if sleep:
-           time.sleep(fw.x)
-       return fw
+            time.sleep(fw.x)
+        return fw
     except RPCError as generic_error:
         logging.error(f"An exception occurred: {generic_error}")
         return generic_error
@@ -88,8 +88,8 @@ def send_sticker(client: Client, sleep: bool = True, *args, **kwargs):
     except FloodWait as fw:
         logging.warning(f"FloodWait! A wait of {fw.x} seconds is required")
         if sleep:
-           time.sleep(fw.x)
-       return fw
+            time.sleep(fw.x)
+        return fw
     except RPCError as generic_error:
         logging.error(f"An exception occurred: {generic_error}")
         return generic_error
@@ -110,11 +110,8 @@ def send_animation(client: Client, sleep: bool = True, *args, **kwargs):
     except FloodWait as fw:
         logging.warning(f"FloodWait! A wait of {fw.x} seconds is required")
         if sleep:
-           time.sleep(fw.x)
-       return fw
+            time.sleep(fw.x)
+        return fw
     except RPCError as generic_error:
         logging.error(f"An exception occurred: {generic_error}")
         return generic_error
-
-
-

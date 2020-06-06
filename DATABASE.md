@@ -36,9 +36,11 @@ of tuples. Each tuple contains a user ID as stored in the database
 - `set_user()` -> Saves an ID/username pair (in this order)
 to the database. The username parameter can be `None`
 
-- `ban_user()` -> Bans the user with the given user ID (Coming soon)
+- `ban_user()` -> Bans the user with the given user ID
 
-- `unban_user()` -> Unbans a user with the given ID (Coming soon)
+- `unban_user()` -> Unbans a user with the given ID
+
+- `update_user` -> Updates a user's username with the given ID
 
 # I need MySQL/other DBMS!
 

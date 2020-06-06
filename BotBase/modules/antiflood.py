@@ -29,7 +29,7 @@ def is_flood(updates: list):
         return False
 
 
-@Client.on_callback_query(FILTER & ~BYPASS_USERS, group=-1)
+@Client.on_callback_query(~BYPASS_USERS, group=-1)
 @Client.on_message(FILTER & ~BYPASS_USERS, group=-1)
 def anti_flood(client, update):
     """Anti flood module"""

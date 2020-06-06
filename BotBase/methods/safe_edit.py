@@ -5,7 +5,7 @@ from pyrogram import Client, CallbackQuery
 from typing import Union
 
 
-def edit_message_text(update: Union[CallbackQuery, Client], sleep: bool = True *args, **kwargs):
+def edit_message_text(update: Union[CallbackQuery, Client], sleep: bool = True, *args, **kwargs):
     """Edits a message in a way that never triggers exceptions and logs errors
 
        :param update: The pyrogram.Client instance or pyrogram.CallbackQuery

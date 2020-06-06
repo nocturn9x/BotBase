@@ -4,7 +4,7 @@ BotBase has a builtin collection of wrappers around Pyrogram methods that make
 it even easier to use them properly.
 
 **DISCLAIMER**: These methods are just wrappers around Pyrogram's ones and behave
-exactly the same. Every method listed here takes 2 extra positional arguments,
+exactly the same. Every method listed here takes 2 extra arguments,
 namely a `Client`/`CallbackQuery` instance and a boolean parameter (read below)
 
 All other arguments, including keyword ones, are passed to pyrogram directly.
@@ -44,4 +44,5 @@ List of the available functions in `BotBase.methods.various`
 
 - `answer` (for `CallbackQuery` objects)
 - `delete_messages`
+- `get_users`
 
