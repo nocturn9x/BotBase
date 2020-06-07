@@ -1,6 +1,7 @@
 from ..config import ADMINS, USER_INFO, INVALID_SYNTAX, ERROR, NONNUMERIC_ID, USERS_COUNT, \
     NO_PARAMETERS, ID_MISSING, GLOBAL_MESSAGE_STATS, NAME, WHISPER_FROM, USER_INFO_UPDATED, USER_INFO_UNCHANGED, \
-    USER_BANNED, USER_UNBANNED, CANNOT_BAN_ADMIN, USER_ALREADY_BANNED, USER_NOT_BANNED, YOU_ARE_BANNED, YOU_ARE_UNBANNED
+    USER_BANNED, USER_UNBANNED, CANNOT_BAN_ADMIN, USER_ALREADY_BANNED, USER_NOT_BANNED, YOU_ARE_BANNED, YOU_ARE_UNBANNED, \
+    MARKED_BUSY, UNMARKED_BUSY, CACHE
 from pyrogram import Client, Filters
 from ..database.query import get_user, get_users, update_name, ban_user, unban_user
 from .antiflood import BANNED_USERS
@@ -194,3 +195,18 @@ def unban(client, message):
             send_message(client, True, message.chat.id, f"{ERROR}: {NONNUMERIC_ID}")
     else:
         send_message(client, True, message.chat.id,  f"{INVALID_SYNTAX}: Use <code>/unban user_id</code>")
+
+
+@Client.on_message(Filters.command("/busy") & ADMINS_FILTER & Filters.private & ~BANNED_USERS & ~Filters.edited)
+def get_random_user(client, message):
+    logging.warning(f"{ADMINS[message.from_user.id]} [{message.from_user.id}] sent /busy")
+    if len(message.command) > 1:
+        send_message(client, True, message.chat.id, f"{INVALID_SYNTAX}: {NO_PARAMETERS.format(command='/busy')}")
+    else:
+        if CACHE[message.from_user.id][0] == "none":
+            send_message(client, True, message.chat.id, MARKED_BUSY)
+            CACHE[message.from_user.id] = ["IN_CHAT", 1234567]
+        else:
+            if message.from_user.id in CACHE:
+                del CACHE[message.from_user.id]
+            send_message(client, True, message.chat.id, UNMARKED_BUSY)

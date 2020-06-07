@@ -6,6 +6,8 @@ BotBase is a collection of plugins that use [Pyrogram's](https://github.com/pyro
 
 BotBase requires a solid knowledge of pyrogram and of the Telegram MTProto API itself, you can check pyrogram's docs [here](https://docs.pyrogram.org)
 
+The author of this project assumes that the reader is not a completely computer illiterate, this project is thought for smart people that want to develop better bots faster, it is **not** a beginner's friendly thing.
+
 Also, you need to know how to host a bot yourself. I mean, I coded all of this for you already, make some effort!
 
 ## BotBase - Setup
@@ -17,7 +19,7 @@ To setup a project using BotBase, follow this step-by-step guide (assuming `pip`
 - Once that is done, open the `BotBase/config.py` module with a text editor and start changing the default settings
 - The first thing you might want to do is change the `API_ID`, `API_HASH` and `BOT_TOKEN` global variables. Check [this page](https://my.telegram.org/apps) and login with your telegram account to create an API_ID/API_HASH pair. For the bot token, just create one with [BotFather](https://telegram.me/BotFather)
 
-**Note**: The configuration file is still a python file, so when it will be imported any python code that you typed inside it will be executed, so be careful! If you need to perform pre-startup operations it is advised to do them in the `if __name__ == "main":` block inside `bot.py`, before `bot.start()`
+**Note**: The configuration file is still a python file and when it will be imported any python code that you typed inside it will be executed, so be careful! If you need to perform pre-startup operations it is advised to do them in the `if __name__ == "main":` block inside `bot.py`, before `bot.start()`
 
 ## BotBase - Plugins
 
@@ -70,6 +72,7 @@ The available commands are:
 - `/global msg`: Broadcast `msg` to all users, supports HTML and markdown formatting
 - `/whisper ID msg`: Send `msg` to a specific user given its ID. HTML and markdown formatting supported
 - `/update ID`: Updates the user's info in the database, if they've changed
+- `/busy`: Sets your admin status as busy/not busy to silence/unsilence support requests to you
 
 ### Plugins - Antiflood
 
