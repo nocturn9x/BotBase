@@ -81,7 +81,7 @@ def set_user(tg_id: int, uname: str):
         try:
             with database:
                 cursor = database.cursor()
-                cursor.execute(DB_SET_USER, (None, tg_id, uname, time.strftime("%d/%m/%Y %T %p")))
+                cursor.execute(DB_SET_USER, (None, tg_id, uname, time.strftime("%d/%m/%Y %T %p"), 0))
                 cursor.close()
             return True
         except sqlite3.Error as query_error:
