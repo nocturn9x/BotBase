@@ -17,11 +17,10 @@ def create_database(path: str, query: str):
     else:
         try:
             with database:
-                cursor = database.cursor()
-                cursor.executescript(query)
-                cursor.close()
+                database.executescript(query)
+                database.close()
         except sqlite3.Error as query_error:
-            logging.info(f"An error has occurred while executing query: {query_error}")
+            logging.info(f"An error has occurred while executing DB_CREATE: {query_error}")
 
 
 def get_user(tg_id: int):
@@ -48,9 +47,8 @@ def update_name(tg_id: int, name: str):
     else:
         try:
             with database:
-                cursor = database.cursor()
-                query = cursor.execute(DB_UPDATE_NAME, (name, tg_id))
-                return query.fetchone()
+                database.execute(DB_UPDATE_NAME, (name, tg_id))
+            return True
         except sqlite3.Error as query_error:
             logging.error(f"An error has occurred while executing DB_UPDATE_NAME query: {query_error}")
             return query_error
@@ -80,9 +78,7 @@ def set_user(tg_id: int, uname: str):
     else:
         try:
             with database:
-                cursor = database.cursor()
-                cursor.execute(DB_SET_USER, (None, tg_id, uname, time.strftime("%d/%m/%Y %T %p"), 0))
-                cursor.close()
+                database.execute(DB_SET_USER, (None, tg_id, uname, time.strftime("%d/%m/%Y %T %p"), 0))
             return True
         except sqlite3.Error as query_error:
             logging.error(f"An error has occurred while executing DB_GET_USERS query: {query_error}")
@@ -97,9 +93,7 @@ def ban_user(tg_id: int):
     else:
         try:
             with database:
-                cursor = database.cursor()
-                cursor.execute(DB_BAN_USER, (tg_id, ))
-                cursor.close()
+                database.execute(DB_BAN_USER, (tg_id, ))
             return True
         except sqlite3.Error as query_error:
             logging.error(f"An error has occurred while executing DB_BAN_USER query: {query_error}")
@@ -114,9 +108,7 @@ def unban_user(tg_id: int):
     else:
         try:
             with database:
-                cursor = database.cursor()
-                cursor.execute(DB_UNBAN_USER, (tg_id, ))
-                cursor.close()
+                database.execute(DB_UNBAN_USER, (tg_id, ))
             return True
         except sqlite3.Error as query_error:
             logging.error(f"An error has occurred while executing DB_UNBAN_USER query: {query_error}")

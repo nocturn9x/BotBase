@@ -14,6 +14,8 @@ def check_user_banned(tg_id: int):
     if isinstance(res, Exception):
         return False
     else:
+        if not res:
+            return False
         if res[-1]:
             return True
         else:
@@ -50,13 +52,13 @@ def start_handler(client, message):
                          )
 
 
-@Client.on_callback_query(Filters.callback_data("info"))
+@Client.on_callback_query(Filters.callback_data("info") & ~BANNED_USERS)
 def bot_info(_, query):
     buttons = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", "back_start")]])
     edit_message_text(query, True, CREDITS.format(), reply_markup=buttons)
 
 
-@Client.on_callback_query(Filters.callback_data("back_start"))
+@Client.on_callback_query(Filters.callback_data("back_start") & ~BANNED_USERS)
 def back_start(_, query):
     if query.from_user.first_name:
         name = query.from_user.first_name
@@ -69,9 +71,7 @@ def back_start(_, query):
         if isinstance(data, list):
             for chatid, message_ids in data:
                 delete_messages(_, True, chatid, message_ids)
-        start_handler(_, query)
-    else:
-        edit_message_text(query, True,
-                          GREET.format(mention=f"[{name}](tg://user?id={query.from_user.id})", id=query.from_user.id,
-                                       username=query.from_user.username),
-                          reply_markup=BUTTONS)
+    edit_message_text(query, True,
+                      GREET.format(mention=f"[{name}](tg://user?id={query.from_user.id})", id=query.from_user.id,
+                                   username=query.from_user.username),
+                      reply_markup=BUTTONS)
