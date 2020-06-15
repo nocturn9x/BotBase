@@ -1,5 +1,5 @@
 import sqlite3.dbapi2 as sqlite3
-from ..config import DB_GET_USERS, DB_GET_USER, DB_PATH, DB_SET_USER, DB_UPDATE_NAME, DB_BAN_USER, DB_UNBAN_USER
+from ..config import DB_GET_USERS, DB_GET_USER, DB_PATH, DB_SET_USER, DB_UPDATE_NAME, DB_BAN_USER, DB_UNBAN_USER, DB_GET_USER_BY_NAME
 import logging
 import time
 import os
@@ -36,6 +36,22 @@ def get_user(tg_id: int):
                 return query.fetchone()
         except sqlite3.Error as query_error:
             logging.error(f"An error has occurred while executing DB_GET_USER query: {query_error}")
+            return query_error
+
+
+def get_user_by_name(uname: str):
+    try:
+        database = sqlite3.connect(DB_PATH)
+    except sqlite3.Error as connection_error:
+        logging.error(f"An error has occurred while connecting to database: {connection_error}")
+    else:
+        try:
+            with database:
+                cursor = database.cursor()
+                query = cursor.execute(DB_GET_USER_BY_NAME, (uname,))
+                return query.fetchone()
+        except sqlite3.Error as query_error:
+            logging.error(f"An error has occurred while executing DB_GET_USER_BY_NAME query: {query_error}")
             return query_error
 
 

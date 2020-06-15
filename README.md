@@ -21,6 +21,8 @@ To setup a project using BotBase, follow this step-by-step guide (assuming `pip`
 
 **Note**: The configuration file is still a python file and when it will be imported any python code that you typed inside it will be executed, so be careful! If you need to perform pre-startup operations it is advised to do them in the `if __name__ == "main":` block inside `bot.py`, before `bot.start()`
 
+Once you're done configuring, move to the top level directory of the project and run `python3 bot.py`
+
 ## BotBase - Plugins
 
 BotBase comes with lots of default plugins and tools to manage database interaction.
@@ -73,6 +75,7 @@ The available commands are:
 - `/whisper ID msg`: Send `msg` to a specific user given its ID. HTML and markdown formatting supported
 - `/update ID`: Updates the user's info in the database, if they've changed
 - `/busy`: Sets your admin status as busy/not busy to silence/unsilence support requests to you
+- `/userbyname`: Same as `getuser`, but takes an username (without the @) as input. Note that if the database contains multiple users with the same username, due to old data for instance, only the first entry is returned
 
 ### Plugins - Antiflood
 
@@ -96,7 +99,7 @@ If you don't know what a smart plugin is, check [this link](https://docs.pyrogra
 There are some things to keep in mind, though:
 
 - If you want to protect your plugin from flood, import the `BotBase.modules.antiflood.BANNED_USERS` filter (basically a `Filters.user()` object) and use it like this: `~BANNED_USERS`. This will restrict banned users from reaching your handler at all.
-Please note that users banned with the `/ban` command will be put in that filter, too.
+Please note that users banned with the `/ban` command are filtered with the custom filter `BotBase.config.user_banned`!
 - To avoid repetition with try/except blocks, BotBase also implements some wrappers around `pyrogram.Client` and `pyrogram.CallbackQuery` (and many more soon) that perform automatic exception handling and log to the console automatically, check the `METHODS.md` file in this repo to know more
 - Nothing restricts you from changing how the default plugins work, but this is not advised. The default plugins have been designed to cooperate together and breaking this might lead to obscure tracebacks and errors that are hard to debug
 - BotBase also has many default methods to handle database interaction, check the `DATABASE.md` file in this repo to know more

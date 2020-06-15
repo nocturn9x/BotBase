@@ -1,11 +1,11 @@
 from pyrogram import Client, Filters, Message, CallbackQueryHandler
 from ..config import MAX_UPDATE_THRESHOLD, ANTIFLOOD_SENSIBILITY, BAN_TIME, ADMINS, BYPASS_FLOOD, FLOOD_NOTICE, \
-    COUNT_CALLBACKS_SEPARATELY, FLOOD_PERCENTAGE, CACHE, PRIVATE_ONLY, DELETE_MESSAGES
+    COUNT_CALLBACKS_SEPARATELY, FLOOD_PERCENTAGE, CACHE, PRIVATE_ONLY, DELETE_MESSAGES, bot
 from collections import defaultdict
 import logging
 import time
-from ..methods.safe_send import send_message
-from ..methods.various import delete_messages
+from ..methods import MethodWrapper
+from ..config import check_user_banned
 
 # Some variables for runtime configuration
 
@@ -14,6 +14,7 @@ BANNED_USERS = Filters.user()  # Filters where the antiflood will put banned use
 BYPASS_USERS = Filters.user(list(ADMINS.keys())) if BYPASS_FLOOD else Filters.user()
 QUERIES = defaultdict(list) if COUNT_CALLBACKS_SEPARATELY else MESSAGES
 FILTER = Filters.private if PRIVATE_ONLY else ~Filters.user()
+wrapper = MethodWrapper(bot)
 
 
 def is_flood(updates: list):
@@ -23,7 +24,7 @@ def is_flood(updates: list):
     genexpr = [i <= ANTIFLOOD_SENSIBILITY for i in
                ((updates[i + 1] - timestamp) if i < (MAX_UPDATE_THRESHOLD - 1) else (timestamp - updates[i - 1]) for
                 i, timestamp in enumerate(updates))]
-    return genexpr.count(True) >= int((len(genexpr) / 100) * FLOOD_PERCENTAGE)
+    return sum(genexpr) >= int((len(genexpr) / 100) * FLOOD_PERCENTAGE)
 
 
 @Client.on_message(FILTER & ~BYPASS_USERS, group=-1)
@@ -63,9 +64,9 @@ def anti_flood(client, update):
             BANNED_USERS.add(user_id)
             VAR[user_id] = chat, time.time()
             if FLOOD_NOTICE:
-                send_message(client, True, user_id, FLOOD_NOTICE)
+                wrapper.send_message(user_id, FLOOD_NOTICE)
             if DELETE_MESSAGES and any(updates):
-                delete_messages(client, True, chat, filter(bool, updates))
+                wrapper.delete_messages(chat, filter(bool, updates))
         else:
             if user_id in VAR:
                 del VAR[user_id]
