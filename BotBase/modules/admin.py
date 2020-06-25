@@ -1,7 +1,7 @@
 from ..config import ADMINS, USER_INFO, INVALID_SYNTAX, ERROR, NONNUMERIC_ID, USERS_COUNT, \
     NO_PARAMETERS, ID_MISSING, GLOBAL_MESSAGE_STATS, NAME, WHISPER_FROM, USER_INFO_UPDATED, USER_INFO_UNCHANGED, \
     USER_BANNED, USER_UNBANNED, CANNOT_BAN_ADMIN, USER_ALREADY_BANNED, USER_NOT_BANNED, YOU_ARE_BANNED, YOU_ARE_UNBANNED, \
-    MARKED_BUSY, UNMARKED_BUSY, CACHE, bot, YES, NO, NAME_MISSING
+    MARKED_BUSY, UNMARKED_BUSY, CACHE, YES, NO, NAME_MISSING, bot
 from pyrogram import Client, Filters
 from ..database.query import get_user, get_users, update_name, ban_user, unban_user, get_user_by_name
 from .antiflood import BANNED_USERS
@@ -14,7 +14,6 @@ from ..methods import MethodWrapper
 
 ADMINS_FILTER = Filters.user(list(ADMINS.keys()))
 wrapper = MethodWrapper(bot)
-
 
 @Client.on_message(Filters.command("getranduser") & ADMINS_FILTER & ~BANNED_USERS & ~Filters.edited)
 def get_random_user(client, message):
@@ -66,7 +65,8 @@ def get_user_info(client, message):
 @Client.on_message(Filters.command("userbyname") & ADMINS_FILTER & Filters.private & ~BANNED_USERS & ~Filters.edited)
 def get_user_by_uname(client, message):
     if len(message.command) == 2:
-        user = get_user_by_name(message.command[1])
+        name = message.command[1].lstrip("@").lower()
+        user = get_user_by_name(name)
         if user:
             logging.warning(f"{ADMINS[message.from_user.id]} [{message.from_user.id}] sent /userbyname {message.command[1]}")
             _, uid, uname, date, banned = user

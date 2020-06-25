@@ -2,7 +2,7 @@ from pyrogram import Client, Filters, InlineKeyboardMarkup, InlineKeyboardButton
 from ..config import CACHE, ADMINS, ADMINS_LIST_UPDATE_DELAY, callback_regex, admin_is_chatting, \
     user_is_chatting, LIVE_CHAT_STATUSES, STATUS_BUSY, STATUS_FREE, SUPPORT_REQUEST_SENT, SUPPORT_NOTIFICATION, \
     ADMIN_JOINS_CHAT, USER_CLOSES_CHAT, JOIN_CHAT_BUTTON, USER_INFO, USER_LEAVES_CHAT, ADMIN_MESSAGE, USER_MESSAGE, \
-    TOO_FAST, CHAT_BUSY, LEAVE_CURRENT_CHAT, USER_JOINS_CHAT, NAME, bot, CANNOT_REQUEST_SUPPORT, YES, NO, user_banned, CLOSE_CHAT_BUTTON, BACK_BUTTON, UPDATE_BUTTON
+    TOO_FAST, CHAT_BUSY, LEAVE_CURRENT_CHAT, USER_JOINS_CHAT, NAME, CANNOT_REQUEST_SUPPORT, YES, NO, user_banned, CLOSE_CHAT_BUTTON, BACK_BUTTON, UPDATE_BUTTON, bot
 import time
 from ..database.query import get_user
 from .antiflood import BANNED_USERS
@@ -105,7 +105,7 @@ def close_chat(_, query):
                 del CACHE[user_id]
                 wrapper.send_message(user_id,
                              USER_CLOSES_CHAT.format(user_id=NAME.format(admin_id), user_name=admin_name))
-            del CACHE[query.from_user.id][1]
+            del CACHE[query.from_user.id]
 
     else:
         data = CACHE[query.from_user.id][-1]
