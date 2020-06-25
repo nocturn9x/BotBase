@@ -75,7 +75,7 @@ The available commands are:
 - `/whisper ID msg`: Send `msg` to a specific user given its ID. HTML and markdown formatting supported
 - `/update ID`: Updates the user's info in the database, if they've changed
 - `/busy`: Sets your admin status as busy/not busy to silence/unsilence support requests to you
-- `/userbyname`: Same as `getuser`, but takes an username (without the @) as input. Note that if the database contains multiple users with the same username, due to old data for instance, only the first entry is returned
+- `/userbyname`: Same as `getuser`, but takes an username (case-insentive, with or without the @) as input. Note that if the database contains multiple users with the same username, due to old data for instance, only the first entry is returned
 
 ### Plugins - Antiflood
 

@@ -55,7 +55,7 @@ def anti_flood(client, update):
             if FLOOD_NOTICE:
                 wrapper.send_message(user_id, FLOOD_NOTICE)
             if DELETE_MESSAGES:
-                wrapper.delete_messages(chat, filter(bool, updates))
+                wrapper.delete_messages(chat, updates)
         else:
             if user_id in MESSAGES:
                 del MESSAGES[user_id]
