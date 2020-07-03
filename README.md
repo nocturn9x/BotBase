@@ -100,6 +100,6 @@ There are some things to keep in mind, though:
 
 - If you want to protect your plugin from flood, import the `BotBase.modules.antiflood.BANNED_USERS` filter (basically a `Filters.user()` object) and use it like this: `~BANNED_USERS`. This will restrict banned users from reaching your handler at all.
 Please note that users banned with the `/ban` command are filtered with the custom filter `BotBase.config.user_banned`!
-- To avoid repetition with try/except blocks, BotBase also implements some wrappers around `pyrogram.Client` and `pyrogram.CallbackQuery` (and many more soon) that perform automatic exception handling and log to the console automatically, check the `METHODS.md` file in this repo to know more
+- To avoid repetition with try/except blocks, BotBase implements a wrapper object that performs automatic exception handling and log to the console, check the `METHODS.md` file in this repo to know more
 - Nothing restricts you from changing how the default plugins work, but this is not advised. The default plugins have been designed to cooperate together and breaking this might lead to obscure tracebacks and errors that are hard to debug
 - BotBase also has many default methods to handle database interaction, check the `DATABASE.md` file in this repo to know more
