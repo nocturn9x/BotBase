@@ -1,7 +1,7 @@
 from ..config import ADMINS, USER_INFO, INVALID_SYNTAX, ERROR, NONNUMERIC_ID, USERS_COUNT, \
     NO_PARAMETERS, ID_MISSING, GLOBAL_MESSAGE_STATS, NAME, WHISPER_FROM, USER_INFO_UPDATED, USER_INFO_UNCHANGED, \
     USER_BANNED, USER_UNBANNED, CANNOT_BAN_ADMIN, USER_ALREADY_BANNED, USER_NOT_BANNED, YOU_ARE_BANNED, YOU_ARE_UNBANNED, \
-    MARKED_BUSY, UNMARKED_BUSY, CACHE, YES, NO, NAME_MISSING, bot
+    MARKED_BUSY, UNMARKED_BUSY, CACHE, YES, NO, NAME_MISSING, bot, WHISPER_SUCCESSFUL
 from pyrogram import Client, Filters
 from ..database.query import get_user, get_users, update_name, ban_user, unban_user, get_user_by_name
 from .antiflood import BANNED_USERS
@@ -19,13 +19,13 @@ wrapper = MethodWrapper(bot)
 def get_random_user(client, message):
     logging.warning(f"{ADMINS[message.from_user.id]} [{message.from_user.id}] sent /getranduser")
     if len(message.command) > 1:
-        wrapper.send_message(message.chat.id, f"{INVALID_SYNTAX}: {NO_PARAMETERS.format(command='/getranduser')}")
+        wrapper.send_message(message.chat.id, f"{NO_PARAMETERS.format(command='/getranduser')}")
     else:
         user = random.choice(get_users())
         rowid, uid, uname, date, banned = get_user(*user)
         admin = uid in ADMINS
         text = USER_INFO.format(uid=uid,
-                                uname='@' + uname if uname != 'null' else uname,
+                                uname='@' + uname if uname else 'null',
                                 date=date,
                                 status=YES if banned else NO,
                                 admin=NO if not admin else YES)
@@ -34,9 +34,12 @@ def get_random_user(client, message):
 
 @Client.on_message(Filters.command("count") & ADMINS_FILTER & Filters.private & ~BANNED_USERS & ~Filters.edited)
 def count_users(client, message):
-    logging.warning(f"{ADMINS[message.from_user.id]} [{message.from_user.id}] sent /count")
-    count = len(get_users())
-    wrapper.send_message(message.chat.id, USERS_COUNT.format(count=count))
+    if len(message.command) > 1:
+        wrapper.send_message(message.chat.id, f"{NO_PARAMETERS.format(command='/getranduser')}")
+    else:
+        logging.warning(f"{ADMINS[message.from_user.id]} [{message.from_user.id}] sent /count")
+        count = len(get_users())
+        wrapper.send_message(message.chat.id, USERS_COUNT.format(count=count))
 
 
 @Client.on_message(Filters.command("getuser") & ADMINS_FILTER & Filters.private & ~BANNED_USERS & ~Filters.edited)
@@ -49,7 +52,7 @@ def get_user_info(client, message):
                 _, uid, uname, date, banned = user
                 admin = uid in ADMINS
                 text = USER_INFO.format(uid=uid,
-                                        uname='@' + uname if uname != 'null' else uname,
+                                        uname='@' + uname if uname else 'null',
                                         date=date,
                                         status=YES if banned else NO,
                                         admin=NO if not admin else YES)
@@ -59,7 +62,7 @@ def get_user_info(client, message):
         else:
             wrapper.send_message(message.chat.id, f"{ERROR}: {NONNUMERIC_ID}")
     else:
-        wrapper.send_message(message.chat.id,  f"{INVALID_SYNTAX}: Use <code>/getuser user_id</code>")
+        wrapper.send_message(message.chat.id,  f"{INVALID_SYNTAX.format(correct='/getuser id')}")
 
 
 @Client.on_message(Filters.command("userbyname") & ADMINS_FILTER & Filters.private & ~BANNED_USERS & ~Filters.edited)
@@ -72,7 +75,7 @@ def get_user_by_uname(client, message):
             _, uid, uname, date, banned = user
             admin = uid in ADMINS
             text = USER_INFO.format(uid=uid,
-                                    uname='@' + uname if uname != 'null' else uname,
+                                    uname='@' + uname if uname else 'null',
                                     date=date,
                                     status=YES if banned else NO,
                                     admin=NO if not admin else YES)
@@ -80,7 +83,7 @@ def get_user_by_uname(client, message):
         else:
             wrapper.send_message(message.chat.id, f"{ERROR}: {NAME_MISSING.format(uname=message.command[1])}")
     else:
-        wrapper.send_message(message.chat.id,  f"{INVALID_SYNTAX}: Use <code>/getuser user_name</code>")
+        wrapper.send_message(message.chat.id,  f"{INVALID_SYNTAX.format(correct='/userbyname [@]username')}")
 
 
 @Client.on_message(Filters.command("global") & ADMINS_FILTER & Filters.private & ~BANNED_USERS & ~Filters.edited)
@@ -99,8 +102,7 @@ def global_message(client, message):
         logging.warning(f"{count - missed}/{count} global messages were successfully delivered")
         wrapper.send_message(message.chat.id, GLOBAL_MESSAGE_STATS.format(count=count, success=(count - missed), msg=msg))
     else:
-        wrapper.send_message(message.chat.id, f"{INVALID_SYNTAX}: Use <code>/global message</code>"
-                     f"\n🍮 Note that the <code>/global</code> command supports markdown and html styling")
+        wrapper.send_message(message.chat.id, f"{INVALID_SYNTAX.format(correct='/global message')}\n**HTML and Markdown styling supported**")
 
 
 @Client.on_message(Filters.command("whisper") & ADMINS_FILTER & Filters.private & ~BANNED_USERS & ~Filters.edited)
@@ -119,13 +121,14 @@ def whisper(client, message):
                     logging.error(
                         f"Could not whisper to {uid} because of {type(result).__name__}: {result}")
                     wrapper.send_message(message.chat.id, f"{ERROR}: {type(result).__name__} -> {result}")
+                else:
+                    wrapper.send_message(message.chat.id, WHISPER_SUCCESSFUL)
             else:
                 wrapper.send_message(message.chat.id, f"{ERROR}: {ID_MISSING.format(uid=uid)}")
         else:
             wrapper.send_message(message.chat.id, f"{ERROR}: {NONNUMERIC_ID}")
     else:
-        wrapper.send_message(message.chat.id, f"{INVALID_SYNTAX}: Use <code>/whisper ID message</code>"
-        f"\n🍮 Note that the <code>/whisper</code> command supports markdown and html styling")
+        wrapper.send_message(message.chat.id, f"{INVALID_SYNTAX.format(correct='/whisper ID')}\n**HTML and Markdown styling supported**")
 
 
 @Client.on_message(Filters.command("update") & ADMINS_FILTER & Filters.private & ~BANNED_USERS & ~Filters.edited)
@@ -153,7 +156,7 @@ def update(client, message):
         else:
             wrapper.send_message(message.chat.id, f"{ERROR}: {NONNUMERIC_ID}")
     else:
-        wrapper.send_message(message.chat.id,  f"{INVALID_SYNTAX}: Use <code>/update user_id</code>")
+        wrapper.send_message(message.chat.id, f"{INVALID_SYNTAX.format(correct='/update ID')}")
 
 
 @Client.on_message(Filters.command("ban") & ADMINS_FILTER & Filters.private & ~BANNED_USERS & ~Filters.edited)
@@ -183,7 +186,7 @@ def ban(client, message):
         else:
             wrapper.send_message(message.chat.id, f"{ERROR}: {NONNUMERIC_ID}")
     else:
-        wrapper.send_message(message.chat.id,  f"{INVALID_SYNTAX}: Use <code>/ban user_id</code>")
+        wrapper.send_message(message.chat.id,  f"{INVALID_SYNTAX.format(correct='/ban ID')}")
 
 
 @Client.on_message(Filters.command("unban") & ADMINS_FILTER & Filters.private & ~BANNED_USERS & ~Filters.edited)
@@ -214,14 +217,14 @@ def unban(client, message):
         else:
             wrapper.send_message(message.chat.id, f"{ERROR}: {NONNUMERIC_ID}")
     else:
-        wrapper.send_message(message.chat.id,  f"{INVALID_SYNTAX}: Use <code>/unban user_id</code>")
+        wrapper.send_message(message.chat.id,  f"{INVALID_SYNTAX.format(correct='/unban ID')}")
 
 
 @Client.on_message(Filters.command("busy") & ADMINS_FILTER & Filters.private & ~BANNED_USERS & ~Filters.edited)
 def busy(client, message):
     logging.warning(f"{ADMINS[message.from_user.id]} [{message.from_user.id}] sent /busy")
     if len(message.command) > 1:
-        wrapper.send_message(message.chat.id, f"{INVALID_SYNTAX}: {NO_PARAMETERS.format(command='/busy')}")
+        wrapper.send_message(message.chat.id, f"{NO_PARAMETERS.format(command='/busy')}")
     else:
         if CACHE[message.from_user.id][0] == "none":
             wrapper.send_message(message.chat.id, MARKED_BUSY)
