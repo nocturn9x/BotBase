@@ -1,13 +1,12 @@
 # BotBase - Methods overview
 
-BotBase has a builtin collection of wrappers around Pyrogram methods that make
+BotBase has a builtin wrapper around Pyrogram methods objects that make
 it even easier to use them properly.
 
-**DISCLAIMER**: These methods are just wrappers around Pyrogram's ones and behave
-the same way.
+**DISCLAIMER**: The ``MethodWrapper`` class is just a wrapper around Pyrogram. 
 
 
-To use the "safe" methods, just import the `MethodWrapper`` class from `BotBase.methods`
+To use the "safe" methods, just import the `MethodWrapper` class from `BotBase.methods`
 and pass it a `pyrogram.Client` **instance** (not the class) or a `pyrogram.CallbackQuery`
 or even a `pyrogram.InlineQuery` object. Then you can just call `wrapper.method` rather than `client.method`.
 
