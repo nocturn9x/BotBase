@@ -1,6 +1,6 @@
 # BotBase - Methods overview
 
-BotBase has a builtin wrapper around Pyrogram methods objects that make
+BotBase has a builtin wrapper around Pyrogram objects that make
 it even easier to use them properly.
 
 **DISCLAIMER**: The ``MethodWrapper`` class is just a wrapper around Pyrogram. 
