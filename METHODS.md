@@ -10,6 +10,6 @@ To use the "safe" methods, just import the `MethodWrapper` class from `BotBase.m
 and pass it a `pyrogram.Client` **instance** (not the class) or a `pyrogram.CallbackQuery`
 or even a `pyrogram.InlineQuery` object. Then you can just call `wrapper.method` rather than `client.method`.
 
-This way, the calls will never trigger exceptions and will log errors to stderr.
+This way, the calls will never trigger `RPCError`s and will log errors to stderr.
 If an exception occurs, the exception object is returned, otherwise whatever
 the called pyrogram method returns will be returned.
