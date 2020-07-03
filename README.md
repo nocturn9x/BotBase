@@ -31,7 +31,7 @@ As of now, the following plugins are active:
 
 - An advanced live chat accessible trough buttons
 - A start module that simply replies to /start and adds the user to the database if not already present
-- An highly customizable antiflood module that protects your both from callback and message flood
+- An highly customizable antiflood module 
 - An administration module with lots of pre-built features such as /global and /whisper
 
 
