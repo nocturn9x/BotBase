@@ -131,16 +131,39 @@ def close_chat(_, query):
             back_start(_, query)
 
 
-@Client.on_message(admin_is_chatting() & Filters.text & ~BANNED_USERS & ~user_banned())
+@Client.on_message(admin_is_chatting() & ~BANNED_USERS & ~user_banned())
 def forward_from_admin(client, message):
-    logging.warning(f"Admin {ADMINS[message.from_user.id]} [{message.from_user.id}] says to {CACHE[message.from_user.id][1]}: {message.text.html}")
-    wrapper.send_message(CACHE[message.from_user.id][1],
-                 ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id],
+    if message.text:
+        logging.warning(f"Admin {ADMINS[message.from_user.id]} [{message.from_user.id}] says to {CACHE[message.from_user.id][1]}: {message.text.html}")
+        wrapper.send_message(CACHE[message.from_user.id][1],
+                             ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id],
                                       user_id=NAME.format(message.from_user.id),
                                       message=message.text.html))
+    elif message.photo:
+        wrapper.send_photo(CACHE[message.from_user.id][1], photo=message.photo.file_id, file_ref=message.photo.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+    elif message.audio:
+        wrapper.send_audio(CACHE[message.from_user.id][1], audio=message.audio.file_id, file_ref=message.audio.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+    elif message.document:
+        wrapper.send_document(CACHE[message.from_user.id][1], document=message.document.file_id, file_ref=message.document.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+    elif message.sticker:
+        wrapper.send_sticker(CACHE[message.from_user.id][1], sticker=message.sticker.file_id, file_ref=message.sticker.file_ref)
+    elif message.video:
+        wrapper.send_video(CACHE[message.from_user.id][1], video=message.video.file_id, file_ref=message.video.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+    elif message.animation:
+        wrapper.send_animation(CACHE[message.from_user.id][1], animation=message.animation.file_id, file_ref=message.animation.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+    elif message.voice:
+        wrapper.send_voice(CACHE[message.from_user.id][1], voice=message.voice.file_id, file_ref=message.voice.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+    elif message.video_note:
+        wrapper.send_video_note(CACHE[message.from_user.id][1], video_note=message.video_note.file_id, file_ref=message.video_note.file_ref)
+    elif message.location:
+        wrapper.send_location(CACHE[message.from_user.id][1], latitude =message.location.latitude , longitude=message.location.longitude)
+    elif message.contact:
+        wrapper.send_contact(CACHE[message.from_user.id][1], phone_number=message.contact.phone_number, first_name=message.contact.first_name, last_name=message.contact.last_name)
+    elif message.poll:
+        wrapper.forward_messages(CACHE[message.from_user.id][1], from_chat_id=message.chat.id, message_ids=message.message_id, as_copy=False)
 
 
-@Client.on_message(user_is_chatting() & Filters.text & ~BANNED_USERS & ~user_banned())
+@Client.on_message(user_is_chatting() & ~BANNED_USERS & ~user_banned())
 def forward_from_user(client, message):
     if message.from_user.first_name:
         name = message.from_user.first_name
@@ -148,10 +171,33 @@ def forward_from_user(client, message):
         name = message.from_user.username
     else:
         name = "Anonymous"
-    logging.warning(f"User {name} [{message.from_user.id}] says to Admin {ADMINS[CACHE[message.from_user.id][1]]} [{CACHE[message.from_user.id][1]}]: {message.text.html}")
-    wrapper.send_message(CACHE[message.from_user.id][1],
+    if message.text:
+        logging.warning(f"User {name} [{message.from_user.id}] says to Admin {ADMINS[CACHE[message.from_user.id][1]]} [{CACHE[message.from_user.id][1]}]: {message.text.html}")
+        wrapper.send_message(CACHE[message.from_user.id][1],
                  USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id),
                                      message=message.text.html))
+    elif message.photo:
+        wrapper.send_photo(CACHE[message.from_user.id][1], photo=message.photo.file_id, file_ref=message.photo.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+    elif message.audio:
+        wrapper.send_audio(CACHE[message.from_user.id][1], audio=message.audio.file_id, file_ref=message.audio.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+    elif message.document:
+        wrapper.send_document(CACHE[message.from_user.id][1], document=message.document.file_id, file_ref=message.document.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+    elif message.sticker:
+        wrapper.send_sticker(CACHE[message.from_user.id][1], sticker=message.sticker.file_id, file_ref=message.sticker.file_ref)
+    elif message.video:
+        wrapper.send_video(CACHE[message.from_user.id][1], video=message.video.file_id, file_ref=message.video.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+    elif message.animation:
+        wrapper.send_animation(CACHE[message.from_user.id][1], animation=message.animation.file_id, file_ref=message.animation.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+    elif message.voice:
+        wrapper.send_voice(CACHE[message.from_user.id][1], voice=message.voice.file_id, file_ref=message.voice.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+    elif message.video_note:
+        wrapper.send_video_note(CACHE[message.from_user.id][1], video_note=message.video_note.file_id, file_ref=message.video_note.file_ref)
+    elif message.location:
+        wrapper.send_location(CACHE[message.from_user.id][1], latitude =message.location.latitude , longitude=message.location.longitude)
+    elif message.contact:
+        wrapper.send_contact(CACHE[message.from_user.id][1], phone_number=message.contact.phone_number, first_name=message.contact.first_name, last_name=message.contact.last_name)
+    elif message.poll:
+        wrapper.forward_messages(CACHE[message.from_user.id][1], from_chat_id=message.chat.id, message_ids=message.message_id, as_copy=False)
 
 
 @Client.on_callback_query(ADMINS_FILTER & callback_regex(r"join_\d+") & ~BANNED_USERS & ~user_banned())
