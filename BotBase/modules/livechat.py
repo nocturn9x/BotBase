@@ -140,19 +140,19 @@ def forward_from_admin(client, message):
                                       user_id=NAME.format(message.from_user.id),
                                       message=message.text.html))
     elif message.photo:
-        wrapper.send_photo(CACHE[message.from_user.id][1], photo=message.photo.file_id, file_ref=message.photo.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+        wrapper.send_photo(CACHE[message.from_user.id][1], photo=message.photo.file_id, file_ref=message.photo.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or '' if message.caption else '' if message.caption else ''))
     elif message.audio:
-        wrapper.send_audio(CACHE[message.from_user.id][1], audio=message.audio.file_id, file_ref=message.audio.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+        wrapper.send_audio(CACHE[message.from_user.id][1], audio=message.audio.file_id, file_ref=message.audio.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or '' if message.caption else ''))
     elif message.document:
-        wrapper.send_document(CACHE[message.from_user.id][1], document=message.document.file_id, file_ref=message.document.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+        wrapper.send_document(CACHE[message.from_user.id][1], document=message.document.file_id, file_ref=message.document.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or '' if message.caption else ''))
     elif message.sticker:
         wrapper.send_sticker(CACHE[message.from_user.id][1], sticker=message.sticker.file_id, file_ref=message.sticker.file_ref)
     elif message.video:
-        wrapper.send_video(CACHE[message.from_user.id][1], video=message.video.file_id, file_ref=message.video.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+        wrapper.send_video(CACHE[message.from_user.id][1], video=message.video.file_id, file_ref=message.video.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or '' if message.caption else ''))
     elif message.animation:
-        wrapper.send_animation(CACHE[message.from_user.id][1], animation=message.animation.file_id, file_ref=message.animation.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+        wrapper.send_animation(CACHE[message.from_user.id][1], animation=message.animation.file_id, file_ref=message.animation.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or '' if message.caption else ''))
     elif message.voice:
-        wrapper.send_voice(CACHE[message.from_user.id][1], voice=message.voice.file_id, file_ref=message.voice.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+        wrapper.send_voice(CACHE[message.from_user.id][1], voice=message.voice.file_id, file_ref=message.voice.file_ref, caption=ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id], user_id=NAME.format(message.from_user.id), message=message.caption.html or '' if message.caption else ''))
     elif message.video_note:
         wrapper.send_video_note(CACHE[message.from_user.id][1], video_note=message.video_note.file_id, file_ref=message.video_note.file_ref)
     elif message.location:
@@ -177,19 +177,19 @@ def forward_from_user(client, message):
                  USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id),
                                      message=message.text.html))
     elif message.photo:
-        wrapper.send_photo(CACHE[message.from_user.id][1], photo=message.photo.file_id, file_ref=message.photo.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+        wrapper.send_photo(CACHE[message.from_user.id][1], photo=message.photo.file_id, file_ref=message.photo.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or '' if message.caption else ''))
     elif message.audio:
-        wrapper.send_audio(CACHE[message.from_user.id][1], audio=message.audio.file_id, file_ref=message.audio.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+        wrapper.send_audio(CACHE[message.from_user.id][1], audio=message.audio.file_id, file_ref=message.audio.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or '' if message.caption else ''))
     elif message.document:
-        wrapper.send_document(CACHE[message.from_user.id][1], document=message.document.file_id, file_ref=message.document.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+        wrapper.send_document(CACHE[message.from_user.id][1], document=message.document.file_id, file_ref=message.document.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or '' if message.caption else ''))
     elif message.sticker:
         wrapper.send_sticker(CACHE[message.from_user.id][1], sticker=message.sticker.file_id, file_ref=message.sticker.file_ref)
     elif message.video:
-        wrapper.send_video(CACHE[message.from_user.id][1], video=message.video.file_id, file_ref=message.video.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+        wrapper.send_video(CACHE[message.from_user.id][1], video=message.video.file_id, file_ref=message.video.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or '' if message.caption else ''))
     elif message.animation:
-        wrapper.send_animation(CACHE[message.from_user.id][1], animation=message.animation.file_id, file_ref=message.animation.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+        wrapper.send_animation(CACHE[message.from_user.id][1], animation=message.animation.file_id, file_ref=message.animation.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or '' if message.caption else ''))
     elif message.voice:
-        wrapper.send_voice(CACHE[message.from_user.id][1], voice=message.voice.file_id, file_ref=message.voice.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or ''))
+        wrapper.send_voice(CACHE[message.from_user.id][1], voice=message.voice.file_id, file_ref=message.voice.file_ref, caption=USER_MESSAGE.format(user_name=name, user_id=NAME.format(message.from_user.id), message=message.caption.html or '' if message.caption else ''))
     elif message.video_note:
         wrapper.send_video_note(CACHE[message.from_user.id][1], video_note=message.video_note.file_id, file_ref=message.video_note.file_ref)
     elif message.location:
