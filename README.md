@@ -17,7 +17,7 @@ To setup a project using BotBase, follow this step-by-step guide (assuming `pip`
 - Open a terminal and type `git clone https://github.com/nocturn9x/BotBase`
 - `cd` into the newly created directory and run `python3 -m pip install -r requirements.txt`
 - Once that is done, copy `BotBase/config.example.py` as `config.py` and edit your `config.py` module with a text editor and start changing the default settings
-- The first thing you might want to do is change the `API_ID`, `API_HASH` and `BOT_TOKEN` global variables. Check [this page](https://my.telegram.org/apps) and login with your Telegram account to create an API_ID/API_HASH pair by registering a new application. For the bot token, just create one with [BotFather](https://telegram.me/BotFather).
+- The first thing you might want to do is change the `API_ID`, `API_HASH` and `BOT_TOKEN` global variables. Check [this page](https://my.telegram.org/apps) and login with your Telegram account to create an `API_ID`/`API_HASH` pair by registering a new application. For the bot token, just create one with [BotFather](https://telegram.me/BotFather).
 
 **Note**: The configuration file is still a python file and when it will be imported any python code that you typed inside it will be executed, so be careful! If you need to perform pre-startup operations it is advised to do them in the `if __name__ == "main":` block inside `bot.py`, before `bot.start()`
 
