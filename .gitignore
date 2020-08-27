@@ -129,13 +129,14 @@ dmypy.json
 .pyre/
 
 # SQlite3 database and session files
-
 database.db
 *.session
 *.session-journal
 
-# Virtual Environment
+# config file
+BotBase/config.py
 
+# virtualenv
 BotEnv
 BotEnv/
 BotEnv/*
