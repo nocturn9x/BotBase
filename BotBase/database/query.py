@@ -97,7 +97,7 @@ def set_user(tg_id: int, uname: str):
                 database.execute(DB_SET_USER, (None, tg_id, uname, time.strftime("%d/%m/%Y %T %p"), 0))
             return True
         except sqlite3.Error as query_error:
-            logging.error(f"An error has occurred while executing DB_GET_USERS query: {query_error}")
+            logging.error(f"An error has occurred while executing DB_SET_USER query: {query_error}")
             return query_error
 
 

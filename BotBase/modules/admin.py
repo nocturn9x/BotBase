@@ -1,7 +1,8 @@
 from ..config import ADMINS, USER_INFO, INVALID_SYNTAX, ERROR, NONNUMERIC_ID, USERS_COUNT, \
     NO_PARAMETERS, ID_MISSING, GLOBAL_MESSAGE_STATS, NAME, WHISPER_FROM, USER_INFO_UPDATED, USER_INFO_UNCHANGED, \
     USER_BANNED, USER_UNBANNED, CANNOT_BAN_ADMIN, USER_ALREADY_BANNED, USER_NOT_BANNED, YOU_ARE_BANNED, YOU_ARE_UNBANNED, \
-    MARKED_BUSY, UNMARKED_BUSY, CACHE, YES, NO, NAME_MISSING, bot, WHISPER_SUCCESSFUL
+    MARKED_BUSY, UNMARKED_BUSY, CACHE, YES, NO, NAME_MISSING, bot, WHISPER_SUCCESSFUL, LEAVE_CURRENT_CHAT, \
+    QUEUE_LIST, CHATS_LIST, ADMIN_BUSY
 from pyrogram import Client, Filters
 from ..database.query import get_user, get_users, update_name, ban_user, unban_user, get_user_by_name
 from .antiflood import BANNED_USERS
@@ -226,10 +227,39 @@ def busy(client, message):
     if len(message.command) > 1:
         wrapper.send_message(message.chat.id, f"{NO_PARAMETERS.format(command='/busy')}")
     else:
-        if CACHE[message.from_user.id][0] == "none":
+        if CACHE[message.from_user.id][0] == "IN_CHAT" and CACHE[message.from_user.id][1] != 1234567:
+            wrapper.send_message(message.from_user.id, LEAVE_CURRENT_CHAT)
+        elif CACHE[message.from_user.id][0] == "none":
             wrapper.send_message(message.chat.id, MARKED_BUSY)
             CACHE[message.from_user.id] = ["IN_CHAT", 1234567]
         else:
             if message.from_user.id in CACHE:
                 del CACHE[message.from_user.id]
             wrapper.send_message(message.chat.id, UNMARKED_BUSY)
+
+
+@Client.on_message(Filters.command("chats") & ADMINS_FILTER & Filters.private & ~BANNED_USERS & ~Filters.edited)
+def chats(client, message):
+    logging.warning(f"{ADMINS[message.from_user.id]} [{message.from_user.id}] sent /chats")
+    if len(message.command) > 1:
+        wrapper.send_message(message.chat.id, f"{NO_PARAMETERS.format(command='/chats')}")
+    else:
+        text = ""
+        for user in CACHE:
+            if CACHE[user][0] == "IN_CHAT" and user not in ADMINS:
+                admin_id = CACHE[user][1]
+                admin_name = ADMINS[admin_id]
+                text += f"- 👤 [User]({NAME.format(user)}) -> 👨‍💻 [{admin_name}]({NAME.format(admin_id)})\n"
+        wrapper.send_message(message.chat.id, CHATS_LIST.format(chats=text))
+
+@Client.on_message(Filters.command("queue") & ADMINS_FILTER & Filters.private & ~BANNED_USERS & ~Filters.edited)
+def queue(client, message):
+    logging.warning(f"{ADMINS[message.from_user.id]} [{message.from_user.id}] sent /queue")
+    if len(message.command) > 1:
+        wrapper.send_message(message.chat.id, f"{NO_PARAMETERS.format(command='/queue')}")
+    else:
+        text = ""
+        for user in CACHE:
+            if CACHE[user][0] == "AWAITING_ADMIN":
+                text += f"- 👤 [User]({NAME.format(user)})\n"
+        wrapper.send_message(message.chat.id, QUEUE_LIST.format(queue=text))

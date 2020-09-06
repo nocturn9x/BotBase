@@ -1,6 +1,6 @@
 from pyrogram import Client, Filters, InlineKeyboardButton, InlineKeyboardMarkup
 from .antiflood import BANNED_USERS
-from ..config import GREET, BUTTONS, CREDITS, CACHE, bot, VERSION, RELEASE_DATE, user_banned, BACK_BUTTON
+from ..config import GREET, BUTTONS, CREDITS, CACHE, bot, VERSION, RELEASE_DATE, user_banned, BACK_BUTTON, USER_LEFT_QUEUE, ADMINS, NAME
 from ..database.query import get_users, set_user
 import logging
 import itertools
@@ -33,14 +33,14 @@ def start_handler(client, message):
                              )
 
 
-@Client.on_callback_query(Filters.callback_data("info") & ~BANNED_USERS)
+@Client.on_callback_query(Filters.regex("info") & ~BANNED_USERS)
 def bot_info(_, query):
     cb_wrapper = MethodWrapper(query)
     buttons = InlineKeyboardMarkup([[InlineKeyboardButton(BACK_BUTTON, "back_start")]])
     cb_wrapper.edit_message_text(CREDITS.format(VERSION=VERSION, RELEASE_DATE=RELEASE_DATE), reply_markup=buttons)
 
 
-@Client.on_callback_query(Filters.callback_data("back_start") & ~BANNED_USERS)
+@Client.on_callback_query(Filters.regex("back_start") & ~BANNED_USERS)
 def back_start(_, query):
     cb_wrapper = MethodWrapper(query)
     if query.from_user.first_name:
@@ -52,8 +52,12 @@ def back_start(_, query):
     if CACHE[query.from_user.id][0] == "AWAITING_ADMIN":
         data = CACHE[query.from_user.id][-1]
         if isinstance(data, list):
-            for chatid, message_ids in data[:-2]:
+            for chatid, message_ids in data:
                 wrapper.delete_messages(chatid, message_ids)
-    cb_wrapper.edit_message_text(GREET.format(mention=f"[{name}](tg://user?id={query.from_user.id})", id=query.from_user.id,
+        for admin in ADMINS:
+            wrapper.send_message(admin, USER_LEFT_QUEUE.format(user=f"[{name}]({NAME.format(query.from_user.id)})"))
+
+    wrapper.send_message(query.from_user.id, GREET.format(mention=f"[{name}](tg://user?id={query.from_user.id})", id=query.from_user.id,
                                               username=query.from_user.username),
                                  reply_markup=BUTTONS)
+    del CACHE[query.from_user.id]

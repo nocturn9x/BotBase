@@ -21,6 +21,8 @@ FLOOD_PERCENTAGE = 75
 ANTIFLOOD_SENSIBILITY = 1
 # If you want the user to be notified of being flood-blocked, set this to the desired message, False to disable
 FLOOD_NOTICE = f"🤙 **Hey amico**!\n🕐 Rilassati! Sei stato bloccato per {BAN_TIME / 60:.1f} minuti"
+FLOOD_CLEARED = "♻️ Tabella antiflood svuotata"
+FLOOD_USER_CLEARED = "♻️ Tabella antiflood ripulita per `{user}`"
 DELETE_MESSAGES = True   # Set this to false if you do not want the messages to be deleted after flood is detected
 
 # Various options and global variables
@@ -38,8 +40,8 @@ WORKERS_NUM = 15   # The number of worker threads that pyrogram will spawn at st
 BOT_TOKEN = "TOKEN HERE"     # Get it with t.me/BotFather
 SESSION_NAME = "BotBase"   # The name of the Telegram Session that the bot will have, will be visible from Telegram
 PLUGINS_ROOT = {"root": f"BotBase/modules"}   # Do not change this unless you know what you're doing
-API_ID = 1234567 # Get it at https://my.telegram.org/apps
-API_HASH = "abcdef123456"  # Same as above
+API_ID = 123467 # Get it at https://my.telegram.org/apps
+API_HASH = "abcdef1234567" # Same as above
 
 # Logging configuration
 # To know more about what these options mean, check https://docs.python.org/3/library/logging.html
@@ -92,7 +94,7 @@ from .database.query import get_user
 # Admin module configuration
 
 # Edit this dict adding the ID:NAME pair of the admin that you want to add. You can add as many admins as you want
-ADMINS = {669152898: "Matt-sama :3", 836296867: "αℓѕσƓAMƐR"}
+ADMINS = {123456: "Sample Name"}
 MARKED_BUSY = "🎲 Ora sei impegnato, invia nuovamente /busy per resettare questo stato"
 UNMARKED_BUSY = "✍ Da ora riceverai nuovamente le richieste di assistenza"
 CANNOT_BAN_ADMIN = "❌ L'utente é un amministratore"
@@ -110,6 +112,11 @@ NAME = "tg://user?id={}"
 BYPASS_FLOOD = True  # If False, admins can be flood-blocked too, otherwise the antiflood will ignore them
 USER_INFO_UPDATED = "✅ Informazioni aggiornate"
 USER_INFO_UNCHANGED = "❌ Non ho rilevato cambiamenti per questo utente"
+ADMIN_ACCEPTED_CHAT = "✅ {admin} ha preso in carico la chat con {user}"
+USER_LEFT_QUEUE = "⚠️ {user} ha lasciato la coda"
+QUEUE_LIST = "🚻 Lista utenti in attesa\n\n{queue}"
+CHATS_LIST = "💬 Lista utenti in chat\n\n{chats}"
+ADMIN_BUSY = "(Occupato)"
 USER_INFO = """**ℹ️ Informazioni**
 
 🆔 **ID**: `{uid}`
@@ -165,10 +172,7 @@ def check_user_banned(tg_id: int):
     else:
         if not res:
             return False
-        if res[-1]:
-            return True
-        else:
-            return False
+        return res[-1]
 
 
 def callback_regex(pattern: str):

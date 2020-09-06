@@ -2,7 +2,8 @@ from pyrogram import Client, Filters, InlineKeyboardMarkup, InlineKeyboardButton
 from ..config import CACHE, ADMINS, ADMINS_LIST_UPDATE_DELAY, callback_regex, admin_is_chatting, \
     user_is_chatting, LIVE_CHAT_STATUSES, STATUS_BUSY, STATUS_FREE, SUPPORT_REQUEST_SENT, SUPPORT_NOTIFICATION, \
     ADMIN_JOINS_CHAT, USER_CLOSES_CHAT, JOIN_CHAT_BUTTON, USER_INFO, USER_LEAVES_CHAT, ADMIN_MESSAGE, USER_MESSAGE, \
-    TOO_FAST, CHAT_BUSY, LEAVE_CURRENT_CHAT, USER_JOINS_CHAT, NAME, CANNOT_REQUEST_SUPPORT, YES, NO, user_banned, CLOSE_CHAT_BUTTON, BACK_BUTTON, UPDATE_BUTTON, bot
+    TOO_FAST, CHAT_BUSY, LEAVE_CURRENT_CHAT, USER_JOINS_CHAT, NAME, CANNOT_REQUEST_SUPPORT, YES, NO, user_banned, CLOSE_CHAT_BUTTON, BACK_BUTTON, UPDATE_BUTTON, bot, \
+    ADMIN_ACCEPTED_CHAT
 import time
 from ..database.query import get_user
 from .antiflood import BANNED_USERS
@@ -20,7 +21,7 @@ BUTTONS = InlineKeyboardMarkup(
 wrapper = MethodWrapper(bot)
 
 
-@Client.on_callback_query(Filters.callback_data("sos") & ~BANNED_USERS & ~user_banned())
+@Client.on_callback_query(Filters.regex("sos") & ~BANNED_USERS & ~user_banned())
 def begin_chat(client, query):
     cb_wrapper = MethodWrapper(query)
     if query.from_user.id in ADMINS:
@@ -53,7 +54,7 @@ def begin_chat(client, query):
         CACHE[query.from_user.id][-1].append((msg.chat.id, msg.message_id))
 
 
-@Client.on_callback_query(Filters.callback_data("update_admins_list") & ~BANNED_USERS & ~user_banned())
+@Client.on_callback_query(Filters.regex("update_admins_list") & ~BANNED_USERS & ~user_banned())
 def update_admins_list(_, query):
     cb_wrapper = MethodWrapper(query)
     if CACHE[query.from_user.id][0] == "AWAITING_ADMIN":
@@ -135,7 +136,26 @@ def close_chat(_, query):
 def forward_from_admin(client, message):
     if message.text:
         logging.warning(f"Admin {ADMINS[message.from_user.id]} [{message.from_user.id}] says to {CACHE[message.from_user.id][1]}: {message.text.html}")
-        wrapper.send_message(CACHE[message.from_user.id][1],
+        if message.text == "/close":
+            admin_id = message.from_user.id
+            user_id = CACHE[admin_id][1]
+            data = CACHE[user_id][-1]
+            if isinstance(data, list):
+                data.append((message.from_user.id, message.message_id))
+                for chatid, message_ids in data:
+                    wrapper.delete_messages(chatid, message_ids)
+            status = CACHE[message.from_user.id][0]
+            if status == "IN_CHAT":
+                wrapper.send_message(message.from_user.id, USER_LEAVES_CHAT)
+                admin_id, admin_name = message.from_user.id, ADMINS[message.from_user.id]
+                logging.warning(f"{ADMINS[admin_id]} [{admin_id}] has terminated the chat with user {CACHE[admin_id][1]}")
+                if CACHE[user_id][0] == "IN_CHAT":
+                    del CACHE[user_id]
+                    wrapper.send_message(user_id,
+                                 USER_CLOSES_CHAT.format(user_id=NAME.format(admin_id), user_name=admin_name))
+                del CACHE[message.from_user.id]
+        else:
+            wrapper.send_message(CACHE[message.from_user.id][1],
                              ADMIN_MESSAGE.format(user_name=ADMINS[message.from_user.id],
                                       user_id=NAME.format(message.from_user.id),
                                       message=message.text.html))
@@ -205,6 +225,15 @@ def join_chat(_, query):
     cb_wrapper = MethodWrapper(query)
     if CACHE[query.from_user.id][0] != "IN_CHAT":
         user_id = int(query.data.split("_")[1])
+        user = wrapper.get_users(user_id)
+        if isinstance(user, Exception):
+            user_name = "Anonymous"
+        elif user.first_name:
+            user_name = user.first_name
+        elif user.username:
+            user_name = user.username
+        else:
+            user_name = "Anonymous"
         if CACHE[user_id][0] != "AWAITING_ADMIN":
             cb_wrapper.answer(CHAT_BUSY)
         else:
@@ -215,8 +244,12 @@ def join_chat(_, query):
             message = wrapper.send_message(query.from_user.id, USER_JOINS_CHAT, reply_markup=buttons)
             admin_joins = wrapper.send_message(user_id, ADMIN_JOINS_CHAT.format(admin_name=admin_name, admin_id=NAME.format(admin_id)),
                                        reply_markup=buttons)
+            logging.warning(f"{admin_name} [{admin_id}] has joined a chat with user {user_name} [{user_id}]")
             for chatid, message_ids in CACHE[user_id][-1]:
                 wrapper.delete_messages(chatid, message_ids)
+            for admin in ADMINS:
+                if CACHE[admin] != "IN_CHAT" and admin != admin_id:
+                    wrapper.send_message(admin, ADMIN_ACCEPTED_CHAT.format(admin=f"[{admin_name}]({NAME.format(admin)})", user=f"[{user_name}]({NAME.format(user_id)})"))
             CACHE[user_id][-1].append((message.chat.id, message.message_id))
             CACHE[user_id][-1].append((admin_joins.chat.id, admin_joins.message_id))
     else:
